@@ -1,20 +1,26 @@
 import Foundation
 import Combine
+import UIKit
 
 enum APIError: Error {
     case invalidURL
     case networkError(Error)
     case decodingError(Error)
+    case imageEncodingError
+    case apiError(String)
 }
 
 class NetworkService {
-    static let shared = NetworkService()
-    private init() {}
+    static var shared: NetworkService!
     
     private let baseURL = "https://openrouter.ai/api/v1"
-    private let apiKey = "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" // Replace with your actual API key
+    private let apiKey: String
     
-    func sendMessage(prompt: String, model: String) -> AnyPublisher<String, APIError> {
+    init(apiKey: String) {
+        self.apiKey = apiKey
+    }
+    
+    func sendMessage(prompt: String, model: String, image: UIImage? = nil) -> AnyPublisher<String, APIError> {
         guard let url = URL(string: "\(baseURL)/chat/completions") else {
             return Fail(error: APIError.invalidURL).eraseToAnyPublisher()
         }
@@ -24,21 +30,39 @@ class NetworkService {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         
-        let body: [String: Any] = [
-            "model": model,
-            "messages": [
-                ["role": "user", "content": prompt]
-            ]
+        var messages: [[String: Any]] = [
+            ["role": "user", "content": prompt]
         ]
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        if let image = image, let imageData = image.jpegData(compressionQuality: 0.8) {
+            let base64Image = imageData.base64EncodedString()
+            messages[0]["content"] = [
+                ["type": "text", "text": prompt],
+                ["type": "image_url", "image_url": ["url": "data:image/jpeg;base64,\(base64Image)"]]
+            ]
+        }
+        
+        let body: [String: Any] = [
+            "model": model,
+            "messages": messages
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        } catch {
+            return Fail(error: APIError.imageEncodingError).eraseToAnyPublisher()
+        }
         
         return URLSession.shared.dataTaskPublisher(for: request)
             .mapError { APIError.networkError($0) }
             .flatMap { data, response -> AnyPublisher<String, APIError> in
-                guard let httpResponse = response as? HTTPURLResponse,
-                      (200...299).contains(httpResponse.statusCode) else {
-                    return Fail(error: APIError.networkError(NSError(domain: "HTTP Error", code: (response as? HTTPURLResponse)?.statusCode ?? -1, userInfo: nil))).eraseToAnyPublisher()
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    return Fail(error: APIError.networkError(NSError(domain: "Invalid Response", code: 0, userInfo: nil))).eraseToAnyPublisher()
+                }
+                
+                if !(200...299).contains(httpResponse.statusCode) {
+                    let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+                    return Fail(error: APIError.apiError("HTTP \(httpResponse.statusCode): \(errorMessage)")).eraseToAnyPublisher()
                 }
                 
                 return Just(data)

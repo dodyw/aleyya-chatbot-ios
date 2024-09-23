@@ -20,6 +20,7 @@
 		C243FD8C2CA10E1F00D93A5D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD852CA10E1F00D93A5D /* ChatView.swift */; };
 		C243FD8D2CA10E1F00D93A5D /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD862CA10E1F00D93A5D /* MessageBubble.swift */; };
 		C243FD8E2CA10E1F00D93A5D /* ModelSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */; };
+		C243FD902CA117E200D93A5D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD8F2CA117E100D93A5D /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		C243FD852CA10E1F00D93A5D /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		C243FD862CA10E1F00D93A5D /* MessageBubble.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSelectionView.swift; sourceTree = "<group>"; };
+		C243FD8F2CA117E100D93A5D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				C243FD852CA10E1F00D93A5D /* ChatView.swift */,
+				C243FD8F2CA117E100D93A5D /* SettingsView.swift */,
 				C243FD862CA10E1F00D93A5D /* MessageBubble.swift */,
 				C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */,
 			);
@@ -310,6 +313,7 @@
 				C243FD8B2CA10E1F00D93A5D /* NetworkService.swift in Sources */,
 				C243FD582CA10C1D00D93A5D /* ContentView.swift in Sources */,
 				C243FD892CA10E1F00D93A5D /* View+Extensions.swift in Sources */,
+				C243FD902CA117E200D93A5D /* SettingsView.swift in Sources */,
 				C243FD8D2CA10E1F00D93A5D /* MessageBubble.swift in Sources */,
 				C243FD8A2CA10E1F00D93A5D /* ChatViewModel.swift in Sources */,
 				C243FD8E2CA10E1F00D93A5D /* ModelSelectionView.swift in Sources */,

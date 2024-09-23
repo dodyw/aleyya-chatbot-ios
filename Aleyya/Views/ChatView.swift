@@ -1,58 +1,99 @@
 import SwiftUI
 
 struct ChatView: View {
-    @StateObject private var viewModel = ChatViewModel()
+    @ObservedObject var viewModel: ChatViewModel
     @State private var showingModelSelection = false
+    @State private var showingImagePicker = false
+    @State private var showingCamera = false
+    @State private var inputImage: UIImage?
     
     var body: some View {
-        NavigationView {
-            VStack {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 10) {
-                            ForEach(viewModel.messages) { message in
-                                MessageBubble(message: message)
-                            }
+        VStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 10) {
+                        ForEach(viewModel.messages) { message in
+                            MessageBubble(message: message)
                         }
-                        .padding()
                     }
-                    .onChange(of: viewModel.messages) { _ in
-                        if let lastMessage = viewModel.messages.last {
-                            withAnimation {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                            }
+                    .padding()
+                }
+                .onChange(of: viewModel.messages) { _ in
+                    if let lastMessage = viewModel.messages.last {
+                        withAnimation {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
+                    }
+                }
+            }
+            
+            HStack {
+                Button(action: {
+                    showingModelSelection = true
+                }) {
+                    Image(systemName: "gear")
+                        .foregroundColor(.blue)
+                }
+                
+                if let selectedImage = viewModel.selectedImage {
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .cornerRadius(5)
+                }
+                
+                TextField("Type a message...", text: $viewModel.inputMessage)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disabled(viewModel.isLoading)
+                
+                if viewModel.selectedModel.supportsImageUpload {
+                    Button(action: {
+                        showingImagePicker = true
+                    }) {
+                        Image(systemName: "photo")
+                            .foregroundColor(.blue)
+                    }
+                    
+                    Button(action: {
+                        showingCamera = true
+                    }) {
+                        Image(systemName: "camera")
+                            .foregroundColor(.blue)
                     }
                 }
                 
-                HStack {
-                    Button(action: {
-                        showingModelSelection = true
-                    }) {
-                        Image(systemName: "gear")
-                            .foregroundColor(.blue)
-                    }
-                    
-                    TextField("Type a message...", text: $viewModel.inputMessage)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .disabled(viewModel.isLoading)
-                    
-                    Button(action: viewModel.sendMessage) {
-                        Image(systemName: "paperplane.fill")
-                            .foregroundColor(.blue)
-                    }
-                    .disabled(viewModel.inputMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isLoading)
+                Button(action: viewModel.sendMessage) {
+                    Image(systemName: "paperplane.fill")
+                        .foregroundColor(.blue)
                 }
-                .padding()
+                .disabled(viewModel.inputMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && viewModel.selectedImage == nil || viewModel.isLoading || viewModel.apiKey.isEmpty)
             }
-            .navigationTitle("Chat")
-            .navigationBarItems(trailing: Button(action: viewModel.startNewChat) {
+            .padding()
+        }
+        .navigationTitle("Chat")
+        .navigationBarItems(
+            leading: Text(viewModel.selectedModel.displayName)
+                .font(.subheadline)
+                .foregroundColor(.secondary),
+            trailing: Button(action: viewModel.startNewChat) {
                 Image(systemName: "plus.circle")
                     .foregroundColor(.blue)
-            })
-        }
+            }
+        )
         .sheet(isPresented: $showingModelSelection) {
             ModelSelectionView(selectedModel: $viewModel.selectedModel)
+        }
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(image: $inputImage, sourceType: .photoLibrary)
+        }
+        .sheet(isPresented: $showingCamera) {
+            ImagePicker(image: $inputImage, sourceType: .camera)
+        }
+        .onChange(of: inputImage) { newImage in
+            if let image = newImage {
+                viewModel.setImage(image)
+            }
         }
         .overlay(
             Group {
@@ -66,11 +107,54 @@ struct ChatView: View {
                 }
             }
         )
+        .alert(isPresented: Binding<Bool>(
+            get: { viewModel.apiKey.isEmpty },
+            set: { _ in }
+        )) {
+            Alert(
+                title: Text("API Key Required"),
+                message: Text("Please set your OpenRouter API key in the settings."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    let sourceType: UIImagePickerController.SourceType
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
+            }
+            picker.dismiss(animated: true)
+        }
     }
 }
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView()
+        ChatView(viewModel: ChatViewModel())
     }
 }
