@@ -5,44 +5,51 @@ struct ChatView: View {
     @State private var showingModelSelection = false
     
     var body: some View {
-        VStack {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(spacing: 10) {
-                        ForEach(viewModel.messages) { message in
-                            MessageBubble(message: message)
+        NavigationView {
+            VStack {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 10) {
+                            ForEach(viewModel.messages) { message in
+                                MessageBubble(message: message)
+                            }
+                        }
+                        .padding()
+                    }
+                    .onChange(of: viewModel.messages) { _ in
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
                         }
                     }
-                    .padding()
                 }
-                .onChange(of: viewModel.messages) { _ in
-                    if let lastMessage = viewModel.messages.last {
-                        withAnimation {
-                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                        }
+                
+                HStack {
+                    Button(action: {
+                        showingModelSelection = true
+                    }) {
+                        Image(systemName: "gear")
+                            .foregroundColor(.blue)
                     }
+                    
+                    TextField("Type a message...", text: $viewModel.inputMessage)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .disabled(viewModel.isLoading)
+                    
+                    Button(action: viewModel.sendMessage) {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(.blue)
+                    }
+                    .disabled(viewModel.inputMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isLoading)
                 }
+                .padding()
             }
-            
-            HStack {
-                Button(action: {
-                    showingModelSelection = true
-                }) {
-                    Image(systemName: "gear")
-                        .foregroundColor(.blue)
-                }
-                
-                TextField("Type a message...", text: $viewModel.inputMessage)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .disabled(viewModel.isLoading)
-                
-                Button(action: viewModel.sendMessage) {
-                    Image(systemName: "paperplane.fill")
-                        .foregroundColor(.blue)
-                }
-                .disabled(viewModel.inputMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isLoading)
-            }
-            .padding()
+            .navigationTitle("Chat")
+            .navigationBarItems(trailing: Button(action: viewModel.startNewChat) {
+                Image(systemName: "plus.circle")
+                    .foregroundColor(.blue)
+            })
         }
         .sheet(isPresented: $showingModelSelection) {
             ModelSelectionView(selectedModel: $viewModel.selectedModel)
