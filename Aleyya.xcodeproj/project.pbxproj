@@ -14,6 +14,12 @@
 		C243FD672CA10C1F00D93A5D /* AleyyaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD662CA10C1F00D93A5D /* AleyyaTests.swift */; };
 		C243FD712CA10C1F00D93A5D /* AleyyaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD702CA10C1F00D93A5D /* AleyyaUITests.swift */; };
 		C243FD732CA10C1F00D93A5D /* AleyyaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD722CA10C1F00D93A5D /* AleyyaUITestsLaunchTests.swift */; };
+		C243FD892CA10E1F00D93A5D /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD7F2CA10E1F00D93A5D /* View+Extensions.swift */; };
+		C243FD8A2CA10E1F00D93A5D /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD812CA10E1F00D93A5D /* ChatViewModel.swift */; };
+		C243FD8B2CA10E1F00D93A5D /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD832CA10E1F00D93A5D /* NetworkService.swift */; };
+		C243FD8C2CA10E1F00D93A5D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD852CA10E1F00D93A5D /* ChatView.swift */; };
+		C243FD8D2CA10E1F00D93A5D /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD862CA10E1F00D93A5D /* MessageBubble.swift */; };
+		C243FD8E2CA10E1F00D93A5D /* ModelSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +50,12 @@
 		C243FD6C2CA10C1F00D93A5D /* AleyyaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AleyyaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C243FD702CA10C1F00D93A5D /* AleyyaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AleyyaUITests.swift; sourceTree = "<group>"; };
 		C243FD722CA10C1F00D93A5D /* AleyyaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AleyyaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C243FD7F2CA10E1F00D93A5D /* View+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
+		C243FD812CA10E1F00D93A5D /* ChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		C243FD832CA10E1F00D93A5D /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		C243FD852CA10E1F00D93A5D /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		C243FD862CA10E1F00D93A5D /* MessageBubble.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
+		C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +106,10 @@
 		C243FD542CA10C1D00D93A5D /* Aleyya */ = {
 			isa = PBXGroup;
 			children = (
+				C243FD802CA10E1F00D93A5D /* Extensions */,
+				C243FD842CA10E1F00D93A5D /* Services */,
+				C243FD822CA10E1F00D93A5D /* ViewModels */,
+				C243FD882CA10E1F00D93A5D /* Views */,
 				C243FD552CA10C1D00D93A5D /* AleyyaApp.swift */,
 				C243FD572CA10C1D00D93A5D /* ContentView.swift */,
 				C243FD592CA10C1F00D93A5D /* Assets.xcassets */,
@@ -125,6 +141,40 @@
 				C243FD722CA10C1F00D93A5D /* AleyyaUITestsLaunchTests.swift */,
 			);
 			path = AleyyaUITests;
+			sourceTree = "<group>";
+		};
+		C243FD802CA10E1F00D93A5D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C243FD7F2CA10E1F00D93A5D /* View+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C243FD822CA10E1F00D93A5D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				C243FD812CA10E1F00D93A5D /* ChatViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C243FD842CA10E1F00D93A5D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				C243FD832CA10E1F00D93A5D /* NetworkService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		C243FD882CA10E1F00D93A5D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C243FD852CA10E1F00D93A5D /* ChatView.swift */,
+				C243FD862CA10E1F00D93A5D /* MessageBubble.swift */,
+				C243FD872CA10E1F00D93A5D /* ModelSelectionView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,7 +307,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C243FD8B2CA10E1F00D93A5D /* NetworkService.swift in Sources */,
 				C243FD582CA10C1D00D93A5D /* ContentView.swift in Sources */,
+				C243FD892CA10E1F00D93A5D /* View+Extensions.swift in Sources */,
+				C243FD8D2CA10E1F00D93A5D /* MessageBubble.swift in Sources */,
+				C243FD8A2CA10E1F00D93A5D /* ChatViewModel.swift in Sources */,
+				C243FD8E2CA10E1F00D93A5D /* ModelSelectionView.swift in Sources */,
+				C243FD8C2CA10E1F00D93A5D /* ChatView.swift in Sources */,
 				C243FD562CA10C1D00D93A5D /* AleyyaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
