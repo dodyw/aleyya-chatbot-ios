@@ -13,7 +13,7 @@ Aleyya is a sophisticated iOS chatbot application that leverages the power of va
   - Mistral 7B Instruct
   - Llama 3.1 8B Instruct
   - Gemini Flash 1.5
-- Image upload functionality for supported models
+- Image upload functionality for supported models (from gallery or camera)
 - Easy model switching
 - Modern and intuitive user interface
 
@@ -36,12 +36,16 @@ Aleyya is a sophisticated iOS chatbot application that leverages the power of va
 1. Clone the repository
 2. Open the project in Xcode
 3. Obtain an API key from [OpenRouter](https://openrouter.ai/)
-4. Run the app and input your API key in the settings
+4. Add the following keys to your Info.plist file:
+   - `NSPhotoLibraryUsageDescription`: "Aleyya needs access to your photo library to upload images for AI analysis."
+   - `NSCameraUsageDescription`: "Aleyya needs access to your camera to take photos for AI analysis."
+5. Run the app and input your API key in the settings
 
 ## Usage
 
 1. Select your preferred AI model
 2. Type a message or upload an image (for supported models)
+   - To upload an image, grant the app permission to access your photo library or camera when prompted
 3. Receive AI-generated responses
 4. Switch models or start a new chat as needed
 
@@ -62,7 +66,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 - OpenRouter for providing access to various AI models
-- The SwiftUI and Combine frameworks 
+- The SwiftUI and Combine frameworks for enabling rapid iOS development
 - The open-source community for inspiration and shared knowledge
 
 ---

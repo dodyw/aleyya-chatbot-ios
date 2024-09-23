@@ -62,7 +62,28 @@ class ChatViewModel: ObservableObject {
     }
     
     func setImage(_ image: UIImage) {
-        selectedImage = image
+        selectedImage = resizeImage(image)
+    }
+    
+    private func resizeImage(_ image: UIImage) -> UIImage {
+        let maxSize: CGFloat = 512
+        let aspectRatio = image.size.width / image.size.height
+        var newSize: CGSize
+        
+        if image.size.width > maxSize || image.size.height > maxSize {
+            if aspectRatio > 1 {
+                newSize = CGSize(width: maxSize, height: maxSize / aspectRatio)
+            } else {
+                newSize = CGSize(width: maxSize * aspectRatio, height: maxSize)
+            }
+        } else {
+            return image // No need to resize
+        }
+        
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { (context) in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 }
 
@@ -89,22 +110,22 @@ struct ChatMessage: Identifiable, Equatable {
 }
 
 enum ChatModel: String, CaseIterable, Identifiable {
-    case gpt4o = "openai/gpt-4-vision-preview"
-    case sonnet35 = "anthropic/claude-3-opus-20240229"
-    case opus = "anthropic/claude-2.1"
-    case qwen = "qwen/qwen1.5-7b-chat"
-    case mistral = "mistralai/mistral-7b-instruct-v0.1"
-    case llama = "meta-llama/llama-2-13b-chat"
-    case gemini = "google/gemini-pro-vision"
+    case gpt4o = "openai/chatgpt-4o-latest"
+    case sonnet35 = "anthropic/claude-3.5-sonnet"
+    case opus = "anthropic/claude-3-opus"
+    case qwen = "qwen/qwen-2.5-72b-instruct"
+    case mistral = "mistralai/mistral-7b-instruct"
+    case llama = "meta-llama/llama-3.1-8b-instruct"
+    case gemini = "google/gemini-flash-1.5"
     
     var id: String { self.rawValue }
     
     var displayName: String {
         switch self {
-        case .gpt4o: return "GPT-4o"
-        case .sonnet35: return "Sonnet 3.5"
-        case .opus: return "Opus"
-        case .qwen: return "Qwen 2 7B Instruct"
+        case .gpt4o: return "OpenAI: ChatGPT-4o"
+        case .sonnet35: return "Anthropic: Claude 3.5 Sonnet"
+        case .opus: return "Anthropic: Claude 3 Opus"
+        case .qwen: return "Qwen2.5 72B Instruct"
         case .mistral: return "Mistral 7B Instruct"
         case .llama: return "Llama 3.1 8B Instruct"
         case .gemini: return "Gemini Flash 1.5"

@@ -1,4 +1,6 @@
 import SwiftUI
+import Photos
+import AVFoundation
 
 struct ChatView: View {
     @ObservedObject var viewModel: ChatViewModel
@@ -6,6 +8,8 @@ struct ChatView: View {
     @State private var showingImagePicker = false
     @State private var showingCamera = false
     @State private var inputImage: UIImage?
+    @State private var showingPermissionAlert = false
+    @State private var permissionAlertMessage = ""
     
     var body: some View {
         VStack {
@@ -49,14 +53,14 @@ struct ChatView: View {
                 
                 if viewModel.selectedModel.supportsImageUpload {
                     Button(action: {
-                        showingImagePicker = true
+                        checkPhotoLibraryPermission()
                     }) {
                         Image(systemName: "photo")
                             .foregroundColor(.blue)
                     }
                     
                     Button(action: {
-                        showingCamera = true
+                        checkCameraPermission()
                     }) {
                         Image(systemName: "camera")
                             .foregroundColor(.blue)
@@ -107,6 +111,14 @@ struct ChatView: View {
                 }
             }
         )
+        .alert(isPresented: $showingPermissionAlert) {
+            Alert(
+                title: Text("Permission Required"),
+                message: Text(permissionAlertMessage),
+                primaryButton: .default(Text("Settings"), action: openSettings),
+                secondaryButton: .cancel()
+            )
+        }
         .alert(isPresented: Binding<Bool>(
             get: { viewModel.apiKey.isEmpty },
             set: { _ in }
@@ -116,6 +128,45 @@ struct ChatView: View {
                 message: Text("Please set your OpenRouter API key in the settings."),
                 dismissButton: .default(Text("OK"))
             )
+        }
+    }
+    
+    private func checkPhotoLibraryPermission() {
+        PHPhotoLibrary.requestAuthorization { status in
+            DispatchQueue.main.async {
+                switch status {
+                case .authorized, .limited:
+                    self.showingImagePicker = true
+                case .denied, .restricted:
+                    self.permissionAlertMessage = "Please allow access to your photo library in Settings to upload images."
+                    self.showingPermissionAlert = true
+                case .notDetermined:
+                    // This case should not be reached as we've just requested authorization
+                    break
+                @unknown default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func checkCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            DispatchQueue.main.async {
+                if granted {
+                    self.showingCamera = true
+                } else {
+                    self.permissionAlertMessage = "Please allow access to your camera in Settings to take photos."
+                    self.showingPermissionAlert = true
+                }
+            }
+        }
+    }
+    
+    private func openSettings() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl)
         }
     }
 }
