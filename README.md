@@ -2,6 +2,21 @@
 
 Aleyya is a sophisticated iOS chatbot application that leverages the power of various AI models through the OpenRouter API. This app provides users with a seamless interface to interact with advanced language models, including support for image-based conversations with compatible models.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="ss/ss1.png" alt="Chat Screen" width="200"/></td>
+    <td><img src="ss/ss2.png" alt="Select Model" width="200"/></td>
+    <td><img src="ss/ss3.png" alt="Settings / OpenRouter API Key" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center">Chat Screen</td>
+    <td align="center">Select Model</td>
+    <td align="center">Settings / API Key</td>
+  </tr>
+</table>
+
 ## Features
 
 - Real-time chat with AI models
@@ -14,6 +29,7 @@ Aleyya is a sophisticated iOS chatbot application that leverages the power of va
   - Llama 3.1 8B Instruct
   - Gemini Flash 1.5
 - Image upload functionality for supported models (from gallery or camera)
+- Automatic image resizing to 512x512 pixels maximum
 - Easy model switching
 - Modern and intuitive user interface
 
@@ -36,18 +52,27 @@ Aleyya is a sophisticated iOS chatbot application that leverages the power of va
 1. Clone the repository
 2. Open the project in Xcode
 3. Obtain an API key from [OpenRouter](https://openrouter.ai/)
-4. Add the following keys to your Info.plist file:
-   - `NSPhotoLibraryUsageDescription`: "Aleyya needs access to your photo library to upload images for AI analysis."
-   - `NSCameraUsageDescription`: "Aleyya needs access to your camera to take photos for AI analysis."
+4. Update the Info.plist file:
+   - Right-click on Info.plist in the Xcode project navigator
+   - Select "Open As" > "Source Code"
+   - Add the following keys and descriptions inside the `<dict>` tag:
+     ```xml
+     <key>NSPhotoLibraryUsageDescription</key>
+     <string>Aleyya needs access to your photo library to upload images for AI analysis.</string>
+     <key>NSCameraUsageDescription</key>
+     <string>Aleyya needs access to your camera to take photos for AI analysis.</string>
+     ```
 5. Run the app and input your API key in the settings
 
 ## Usage
 
-1. Select your preferred AI model
-2. Type a message or upload an image (for supported models)
+1. Launch the app and go to Settings to input your OpenRouter API key
+2. Return to the main chat screen and select your preferred AI model
+3. Type a message or upload an image (for supported models)
    - To upload an image, grant the app permission to access your photo library or camera when prompted
-3. Receive AI-generated responses
-4. Switch models or start a new chat as needed
+   - Images larger than 512x512 pixels will be automatically resized
+4. Send your message and receive AI-generated responses
+5. Switch models or start a new chat as needed
 
 ## Developer
 
